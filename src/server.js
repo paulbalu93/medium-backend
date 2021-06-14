@@ -3,6 +3,8 @@ import listEndpoints from 'express-list-endpoints';
 import mongoose from 'mongoose';
 import usersRouter from './services/users/index.js';
 
+import { unauthorizedErrorhandler, forbiddenErrorHandler, catchAllErrorHandler } from './errorHandlers.js';
+
 const server = express();
 
 const port = process.env.PORT;
@@ -11,7 +13,10 @@ server.use(express.json());
 
 server.use('/users', usersRouter);
 // server.use(cookieparser)
+server.use(unauthorizedErrorhandler);
+server.use(forbiddenErrorHandler);
 
+server.use(catchAllErrorHandler);
 console.table(listEndpoints(server));
 
 mongoose.connect(process.env.MONGO_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true });
